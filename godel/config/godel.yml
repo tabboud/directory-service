@@ -1,0 +1,12 @@
+plugins:
+  resolvers:
+    - https://github.com/{{index GroupParts 1}}/{{index GroupParts 2}}/releases/download/v{{Version}}/{{Product}}-{{Version}}-{{OS}}-{{Arch}}.tgz
+  plugins:
+    - locator:
+        id: com.palantir.godel-mod-plugin:mod-plugin:1.4.0
+exclude:
+  names:
+    - "\\..+"
+    - "vendor"
+  paths:
+    - "godel"

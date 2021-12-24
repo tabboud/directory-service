@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"log"
+	"net/http"
 
 	"github.com/palantir/witchcraft-go-server/v2/wrouter"
 	"github.com/palantir/witchcraft-go-server/v2/wrouter/whttprouter"
@@ -13,12 +14,21 @@ import (
 func main() {
 	addr := flag.String("addr", "localhost:8080", "the address to run the grpc server")
 	flag.Parse()
-	_ = addr
 
 	router := wrouter.New(whttprouter.New())
 	service := newService()
 	if err := auth.RegisterRoutesAuthServiceV1(router, service); err != nil {
 		log.Fatalf("Failed to register routes: %v", err)
+	}
+
+	// Startup the server with the router as the main handler
+	srv := &http.Server{
+		Addr:    *addr,
+		Handler: router,
+	}
+	log.Printf("Server listening on: %v", *addr)
+	if err := srv.ListenAndServe(); err != nil {
+		log.Fatalf("Failed to listen: %v", err)
 	}
 }
 

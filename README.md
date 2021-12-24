@@ -41,3 +41,15 @@ Use the dsctl cli to query the grpc server:
 ```sh
 go run cmd/dsctl/main.go -addr localhost:8080
 ```
+
+### directory-service-conjure
+```sh
+go run cmd/directory-service-conjure -addr localhost:8080
+```
+
+Use curl to query the server:
+```sh
+curl -XPOST http://localhost:8080/v1/auth/login -k \
+    -H 'Content-Type: application/json' \
+    -d '{"username":"jonn","password":"super-strong"}'
+```

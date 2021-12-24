@@ -1,14 +1,20 @@
 # Directory Service
 
 A simple service used to experiment with different RPC frameworks:
-- [twirp](https://github.com/twitchtv/twirp).
+- [twirp](https://github.com/twitchtv/twirp)
 - [gRPC](https://github.com/grpc/grpc-go)
+- [conjure](https://github.com/palantir/conjure-go)
 
 ## Development
 
-Run the following command to re-generate the proto defined server/client code:
+Re-generate the proto defined server/client code:
 ```sh
 protoc --go_out=paths=source_relative:. --go-grpc_out=. --go-grpc_opt=paths=source_relative --twirp_out=paths=source_relative:. rpc/authservice
+```
+
+Re-generate conjure code:
+```sh
+./godelw conjure
 ```
 
 ### directory-service-twip

@@ -11,8 +11,8 @@ import (
 )
 
 func main() {
-	addr := flag.String("addr", "localhost:50051", "the address to connect to")
-	user := flag.String("username", "john", "Username")
+	addr := flag.String("addr", "localhost:8080", "the address to connect to")
+	user := flag.String("username", "", "Username")
 	pass := flag.String("password", "doe", "password")
 	flag.Parse()
 

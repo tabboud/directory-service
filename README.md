@@ -18,17 +18,22 @@ Re-generate conjure code:
 ```
 
 ### directory-service-twip
-```
 Run the Twirp server:
 ```sh
 go run cmd/directory-service-grpc/main.go -addr localhost:8080
 ```
 
-Use curl to query the server:
+Query the server:
+- Using `dsctl`:
+```sh
+go run cmd/dsctl/main.go -type twirp
+```
+
+- Using curl:
 ```sh
 curl -XPOST http://localhost:8080/twirp/com.abboudlab.directoryservice.auth.AuthServiceV1/Login \
     -H 'Content-Type: application/json' \
-    -d '{"username":"gooduser","password":"test-password"}'
+    -d '{"username":"john","password":"super-strong"}'
 ```
 
 ### directory-service-grpc
@@ -37,9 +42,10 @@ Run the grpc server:
 go run cmd/directory-service-grpc/main.go -addr localhost:8080 -username john -password doe
 ```
 
-Use the dsctl cli to query the grpc server:
+Query the server:
+- Using `dsctl`:
 ```sh
-go run cmd/dsctl/main.go -addr localhost:8080
+go run cmd/dsctl/main.go -type grpc
 ```
 
 ### directory-service-conjure
@@ -47,7 +53,13 @@ go run cmd/dsctl/main.go -addr localhost:8080
 go run cmd/directory-service-conjure -addr localhost:8080
 ```
 
-Use curl to query the server:
+Query the server:
+- Using `dsctl`:
+```sh
+go run cmd/dsctl/main.go -type conjure
+```
+
+- Using curl:
 ```sh
 curl -XPOST http://localhost:8080/v1/auth/login -k \
     -H 'Content-Type: application/json' \

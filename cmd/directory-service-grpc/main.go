@@ -6,6 +6,7 @@ import (
 	"net"
 
 	"github.com/tabboud/directory-service/internal/auth"
+	"github.com/tabboud/directory-service/internal/token"
 	"github.com/tabboud/directory-service/rpc/authservice"
 	"google.golang.org/grpc"
 )
@@ -19,7 +20,8 @@ func main() {
 		log.Fatalf("Failed to listen: %v", err)
 	}
 
-	service := auth.NewService()
+	tokenProvider := token.NewUUIDProvider()
+	service := auth.NewService(tokenProvider, 60)
 	srv := grpc.NewServer()
 	authservice.RegisterAuthServiceV1Server(srv, service)
 	if err := srv.Serve(listener); err != nil {

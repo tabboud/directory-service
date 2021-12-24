@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/tabboud/directory-service/internal/auth"
+	"github.com/tabboud/directory-service/internal/token"
 	"github.com/tabboud/directory-service/rpc/authservice"
 )
 
@@ -18,7 +19,8 @@ func main() {
 	flag.Parse()
 
 	// Main application handler
-	authService := auth.NewService()
+	tokenProvider := token.NewUUIDProvider()
+	authService := auth.NewService(tokenProvider, 60)
 	handler := authservice.NewAuthServiceV1Server(authService)
 
 	srv := &http.Server{

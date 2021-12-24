@@ -8,43 +8,64 @@ import (
 	"github.com/tabboud/directory-service/rpc/authservice"
 )
 
-func TestServicess(t *testing.T) {
-	type args struct {
-		tp  auth.TokenProvider
-		ttl int
-	}
+func Test_Login(t *testing.T) {
+	var (
+		tokenProvider = staticTokenProvider{token: "token"}
+		ttl           = 60
+	)
 	for _, tc := range []struct {
 		name    string
-		args    args
 		req     *authservice.LoginRequestV1
 		want    *authservice.LoginResponseV1
 		wantErr bool
 	}{
 		{
 			name: "valid request",
-			args: args{
-				tp: tokenProviderFunc(func() string {
-					return "token"
-				}),
-				ttl: 60,
-			},
 			req: &authservice.LoginRequestV1{
 				Username: "john",
 				Password: "password",
 			},
 			want: &authservice.LoginResponseV1{
 				AccessToken: "token",
-				ExpiresIn:   60,
+				ExpiresIn:   int64(ttl),
 			},
 			wantErr: false,
 		},
+		{
+			name:    "empty request",
+			req:     nil,
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "no username",
+			req: &authservice.LoginRequestV1{
+				Password: "password",
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "no password",
+			req: &authservice.LoginRequestV1{
+				Username: "john",
+			},
+			want:    nil,
+			wantErr: true,
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			s := auth.NewService(tc.args.tp, tc.args.ttl)
+			s := auth.NewService(tokenProvider, ttl)
 			got, err := s.Login(context.Background(), tc.req)
 			if (err != nil) != tc.wantErr {
 				t.Fatalf("Login() error = %v, wantErr %v", err, tc.wantErr)
 			}
+			if tc.wantErr {
+				// skip response verification
+				return
+			}
+
+			// verify response
 			if tc.want.AccessToken != got.AccessToken {
 				t.Fatalf("access tokens are not equal. got: %s, expected: %s",
 					got.AccessToken, tc.want.AccessToken)
@@ -57,8 +78,10 @@ func TestServicess(t *testing.T) {
 	}
 }
 
-type tokenProviderFunc func() string
+type staticTokenProvider struct {
+	token string
+}
 
-func (t tokenProviderFunc) GetToken(ctx context.Context) string {
-	return t()
+func (s staticTokenProvider) GetToken(ctx context.Context) string {
+	return s.token
 }

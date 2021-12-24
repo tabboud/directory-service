@@ -2,5 +2,5 @@ version: 1
 projects:
   conjure:
     output-dir: rpc/conjure
-    ir-locator: rpc/conjure
+    ir-locator: rpc/conjure/auth-service-api.yml
     server: true

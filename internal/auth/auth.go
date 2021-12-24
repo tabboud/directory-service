@@ -8,6 +8,7 @@ import (
 )
 
 type Service struct {
+	authservice.UnimplementedAuthServiceV1Server
 }
 
 func NewService() *Service {

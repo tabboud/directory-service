@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"log"
 	"net/http"
 	"os"
@@ -13,16 +14,15 @@ import (
 )
 
 func main() {
-	var (
-		addr = "localhost:8080"
-	)
+	addr := flag.String("addr", "localhost:8080", "the address to connect to")
+	flag.Parse()
 
 	// Main application handler
 	authService := auth.NewService()
 	handler := server.New(authService)
 
 	srv := &http.Server{
-		Addr:    addr,
+		Addr:    *addr,
 		Handler: handler,
 	}
 
@@ -42,7 +42,7 @@ func main() {
 		close(idleConnsClosed)
 	}()
 
-	log.Printf("Starting application at port %v", addr)
+	log.Printf("Starting application at port %v", *addr)
 	if err := srv.ListenAndServe(); err != nil {
 		log.Fatal(err)
 	}

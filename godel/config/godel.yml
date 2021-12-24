@@ -10,3 +10,4 @@ exclude:
     - "vendor"
   paths:
     - "godel"
+    - "rpc/authservice"

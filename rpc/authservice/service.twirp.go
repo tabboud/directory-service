@@ -3,25 +3,24 @@
 
 package authservice
 
-import (
-	bytes "bytes"
-	context "context"
-	json "encoding/json"
-	errors "errors"
-	fmt "fmt"
-	io "io"
-	ioutil "io/ioutil"
-	http "net/http"
-	url "net/url"
-	path "path"
-	strconv "strconv"
-	strings "strings"
+import context "context"
+import fmt "fmt"
+import http "net/http"
+import ioutil "io/ioutil"
+import json "encoding/json"
+import strconv "strconv"
+import strings "strings"
 
-	twirp "github.com/twitchtv/twirp"
-	ctxsetters "github.com/twitchtv/twirp/ctxsetters"
-	protojson "google.golang.org/protobuf/encoding/protojson"
-	proto "google.golang.org/protobuf/proto"
-)
+import protojson "google.golang.org/protobuf/encoding/protojson"
+import proto "google.golang.org/protobuf/proto"
+import twirp "github.com/twitchtv/twirp"
+import ctxsetters "github.com/twitchtv/twirp/ctxsetters"
+
+import bytes "bytes"
+import errors "errors"
+import io "io"
+import path "path"
+import url "net/url"
 
 // Version compatibility assertion.
 // If the constant is not defined in the package, that likely means

@@ -3,6 +3,8 @@ plugins:
     - https://github.com/{{index GroupParts 1}}/{{index GroupParts 2}}/releases/download/v{{Version}}/{{Product}}-{{Version}}-{{OS}}-{{Arch}}.tgz
   plugins:
     - locator:
+        id: com.palantir.godel-conjure-plugin:conjure-plugin:6.20.0
+    - locator:
         id: com.palantir.godel-mod-plugin:mod-plugin:1.4.0
 exclude:
   names:
@@ -11,3 +13,4 @@ exclude:
   paths:
     - "godel"
     - "rpc/authservice"
+    - "rpc/conjure"

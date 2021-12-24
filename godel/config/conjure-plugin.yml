@@ -1,0 +1,6 @@
+version: 1
+projects:
+  conjure:
+    output-dir: rpc/conjure
+    ir-locator: rpc/conjure
+    server: true

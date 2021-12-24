@@ -1,0 +1,68 @@
+types:
+  definitions:
+    default-package: com.abboudlab.api.auth
+    objects:
+      LoginRequestV1:
+        fields:
+          username: string
+          password: string
+      LoginResponseV1:
+        docs: |
+          LoginResponseV1 returns an OAuth2 response as defined in
+          https://oauth.com/oauth2-servers/access-tokens/access-token-response
+        fields:
+          accessToken:
+            type: string
+            docs: Token to be used in subsequent requests.
+          tokenType:
+            type: string
+            docs: TokenType is the type of token this is. This will always be "bearer".
+          expiresIn:
+            type: integer
+            docs: ExpiresIn is the amount of time in seconds for which the token is valid.
+    errors:
+      # Login errors
+      InvalidLoginRequest:
+        docs: Login request was invalid. Returned from /auth/login.
+        namespace: Login
+        code: INVALID_ARGUMENT
+        safe-args:
+          missingFields:
+            type: list<string>
+      InvalidLoginCredentials:
+        docs: |
+          The provided user could not be authenticated to login.
+        namespace: Login
+        code: PERMISSION_DENIED
+        safe-args:
+          username:
+            type: string
+      # Common errors
+      InternalError:
+        docs: |
+          An internal error has occured.
+          The specific reason is specified in the "reason" argument.
+        namespace: Auth
+        code: INTERNAL
+        safe-args:
+          reason:
+            type: string
+            docs: The reason for the internal error
+
+services:
+  AuthServiceV1:
+    default-auth: header
+    name: Auth Service V1
+    package: com.abboudlab.api.auth
+    base-path: /v1/auth
+    docs: Auth service provides functionality to log in/out of the service.
+    endpoints:
+      login:
+        docs: |
+          Login to the service with a username/password.
+          Returns an InvalidLoginRequest error if the request was invalid.
+        http: POST /login
+        auth: none
+        args:
+          request: LoginRequestV1
+        returns: LoginResponseV1

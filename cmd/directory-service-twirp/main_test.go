@@ -1,4 +1,4 @@
-package server_test
+package main_test
 
 import (
 	"context"
@@ -7,11 +7,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/tabboud/directory-service/internal/server"
 	"github.com/tabboud/directory-service/rpc/authservice"
 )
 
-func Test_New(t *testing.T) {
+func Test_gRPC(t *testing.T) {
 	const (
 		token     = "test-token"
 		expiresIn = 60
@@ -29,7 +28,7 @@ func Test_New(t *testing.T) {
 			}, nil
 		},
 	}
-	handler := server.New(authService)
+	handler := authservice.NewAuthServiceV1Server(authService)
 	srv := httptest.NewUnstartedServer(handler)
 	srv.TLS = &tls.Config{InsecureSkipVerify: true}
 	srv.Start()

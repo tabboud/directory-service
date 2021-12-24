@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/tabboud/directory-service/internal/auth"
-	"github.com/tabboud/directory-service/internal/server"
+	"github.com/tabboud/directory-service/rpc/authservice"
 )
 
 func main() {
@@ -19,7 +19,7 @@ func main() {
 
 	// Main application handler
 	authService := auth.NewService()
-	handler := server.New(authService)
+	handler := authservice.NewAuthServiceV1Server(authService)
 
 	srv := &http.Server{
 		Addr:    *addr,

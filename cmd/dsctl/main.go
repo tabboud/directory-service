@@ -25,15 +25,15 @@ func main() {
 	case "grpc":
 		runGRPCClient(*addr, *user, *pass)
 	case "twirp":
-		runTwirpClient(getHttpAddr(*addr), *user, *pass)
+		runTwirpClient(getHTTPAddr(*addr), *user, *pass)
 	case "conjure":
-		runConjureClient(getHttpAddr(*addr), *user, *pass)
+		runConjureClient(getHTTPAddr(*addr), *user, *pass)
 	default:
 		log.Fatalf("Unknown server type: %s, use one of ('grpc', 'twirp', 'conjure')", *serverType)
 	}
 }
 
-func getHttpAddr(addr string) string {
+func getHTTPAddr(addr string) string {
 	if !strings.HasPrefix(addr, "http://") || !strings.HasPrefix(addr, "https://") {
 		return "http://" + addr
 	}

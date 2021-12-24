@@ -1,14 +1,15 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"log"
 	"net/http"
 
 	"github.com/palantir/witchcraft-go-server/v2/wrouter"
 	"github.com/palantir/witchcraft-go-server/v2/wrouter/whttprouter"
-	"github.com/tabboud/directory-service/rpc/conjure/api/auth"
+	"github.com/tabboud/directory-service/internal/auth"
+	"github.com/tabboud/directory-service/internal/token"
+	authapi "github.com/tabboud/directory-service/rpc/conjure/api/auth"
 )
 
 func main() {
@@ -16,8 +17,9 @@ func main() {
 	flag.Parse()
 
 	router := wrouter.New(whttprouter.New())
-	service := newService()
-	if err := auth.RegisterRoutesAuthServiceV1(router, service); err != nil {
+	tokenProvider := token.NewUUIDProvider()
+	service := auth.NewConjureService(tokenProvider, 60)
+	if err := authapi.RegisterRoutesAuthServiceV1(router, service); err != nil {
 		log.Fatalf("Failed to register routes: %v", err)
 	}
 
@@ -30,17 +32,4 @@ func main() {
 	if err := srv.ListenAndServe(); err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
-}
-
-type service struct{}
-
-func newService() *service {
-	return &service{}
-}
-
-func (s *service) Login(ctx context.Context, requestArg auth.LoginRequestV1) (auth.LoginResponseV1, error) {
-	return auth.LoginResponseV1{
-		AccessToken: "test-token",
-		ExpiresIn:   50,
-	}, nil
 }

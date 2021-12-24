@@ -1,4 +1,4 @@
-package main_test
+package integration
 
 import (
 	"context"
@@ -7,10 +7,11 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/tabboud/directory-service/internal/auth"
 	"github.com/tabboud/directory-service/rpc/authservice"
 )
 
-func Test_gRPC(t *testing.T) {
+func Test_twirp(t *testing.T) {
 	const (
 		token     = "test-token"
 		expiresIn = 60
@@ -20,14 +21,8 @@ func Test_gRPC(t *testing.T) {
 		ExpiresIn:   expiresIn,
 	}
 
-	authService := &mockAuthServiceV1{
-		login: func() (*authservice.LoginResponseV1, error) {
-			return &authservice.LoginResponseV1{
-				AccessToken: token,
-				ExpiresIn:   expiresIn,
-			}, nil
-		},
-	}
+	tokenProvider := hardcodedTokenProvider{token: token}
+	authService := auth.NewService(tokenProvider, expiresIn)
 	handler := authservice.NewAuthServiceV1Server(authService)
 	srv := httptest.NewUnstartedServer(handler)
 	srv.TLS = &tls.Config{InsecureSkipVerify: true}
@@ -51,29 +46,4 @@ func Test_gRPC(t *testing.T) {
 	resp, err = jsonClient.Login(context.Background(), loginReq)
 	assertNoError(t, err)
 	assertResponse(t, expectedResp, resp)
-}
-
-func assertNoError(t *testing.T, err error) {
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
-func assertResponse(t *testing.T, expected, got *authservice.LoginResponseV1) {
-	if expected.AccessToken != got.AccessToken {
-		t.Fatalf("access tokens are not equal. got: %s, expected: %s",
-			got.AccessToken, expected.AccessToken)
-	}
-	if expected.ExpiresIn != got.ExpiresIn {
-		t.Fatalf("expiresIn are not equal. got: %d, expected: %d",
-			got.ExpiresIn, expected.ExpiresIn)
-	}
-}
-
-type mockAuthServiceV1 struct {
-	login func() (*authservice.LoginResponseV1, error)
-}
-
-func (m *mockAuthServiceV1) Login(ctx context.Context, req *authservice.LoginRequestV1) (*authservice.LoginResponseV1, error) {
-	return m.login()
 }

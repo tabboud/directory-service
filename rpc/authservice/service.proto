@@ -1,0 +1,17 @@
+syntax = "proto3";
+package com.abboudlab.directoryservice.auth;
+option go_package = "github.com/tabboud/directory-service/rpc/authservice";
+
+service AuthServiceV1 {
+  rpc Login(LoginRequestV1) returns (LoginResponseV1);
+}
+
+message LoginRequestV1 {
+  string username = 1;
+  string password = 2;
+}
+
+message LoginResponseV1 {
+  string accessToken = 1;
+  int64 expiresIn = 2;
+}
